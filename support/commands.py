@@ -231,7 +231,7 @@ class SupportCommands(commands.Cog):
                 style=style,
                 label=button_content,
                 custom_id=f"{ctx.guild.id}",
-                emoji=emoji
+                emoji=str(emoji)
             )
         )
         try:
