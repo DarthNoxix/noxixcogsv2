@@ -140,7 +140,29 @@ class Support(BaseCommands, SupportCommands, commands.Cog):
                             custom_id=f"{guild.id}"
                         )
                     )
-                await message.edit(components=[button])
+                try:
+                    await message.edit(components=[button])
+                except Exception as e:
+                    if "Invalid emoji" in str(e):
+                        log.warning(f"Button emoji in {guild.name} is bad")
+                        button = ActionRow(
+                            Button(
+                                style=style,
+                                label=button_content,
+                                custom_id=f"{guild.id}"
+                            )
+                        )
+                        await message.edit(components=[button])
+                    else:
+                        button = ActionRow(
+                            Button(
+                                style=style,
+                                label="Click to open a ticket",
+                                custom_id=f"{guild.id}"
+                            )
+                        )
+                        await message.edit(components=[button])
+                        log.warning(f"Error applying button: {e}")
                 asyncio.create_task(self.listen(message), name=str(guild.id))
 
     # Clean up any ticket data that comes from a deleted channel or unknown user

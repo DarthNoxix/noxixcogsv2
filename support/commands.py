@@ -4,6 +4,7 @@ from typing import Union
 import discord
 from redbot.core import commands
 from redbot.core.utils.chat_formatting import box
+from dislash import ButtonStyle, Button, ActionRow
 
 
 class SupportCommands(commands.Cog):
@@ -208,8 +209,38 @@ class SupportCommands(commands.Cog):
         await self.refresh_tasks(str(ctx.guild.id))
 
     @support.command(name="buttonemoji")
-    async def set_button_emoji(self, ctx: commands.Context, emoji: Union[discord.Emoji, discord.PartialEmoji]):
-        """Set a button emoji"""
+    async def set_button_emoji(self, ctx: commands.Context, emoji: Union[discord.Emoji, discord.PartialEmoji, str]):
+        """
+        Set a button emoji
+
+        Currently does NOT support unicode emojis so if using a mobile device, use discord emoji panel
+        """
+        conf = await self.config.guild(ctx.guild).all()
+        bcolor = conf["bcolor"]
+        if bcolor == "red":
+            style = ButtonStyle.red
+        elif bcolor == "blue":
+            style = ButtonStyle.blurple
+        elif bcolor == "green":
+            style = ButtonStyle.green
+        else:
+            style = ButtonStyle.grey
+        button_content = conf["button_content"]
+        button = ActionRow(
+            Button(
+                style=style,
+                label=button_content,
+                custom_id=f"{ctx.guild.id}",
+                emoji=emoji
+            )
+        )
+        try:
+            await ctx.send("This is what your button now looks like!", components=[button])
+        except Exception as e:
+            if "Invalid emoji" in str(e):
+                return await ctx.send("Unable to use that emoji, try again")
+            else:
+                return await ctx.send(f"Cant use that emoji for some reason\nError: {e}")
         await self.config.guild(ctx.guild).emoji.set(str(emoji))
         await ctx.tick()
         await self.refresh_tasks(str(ctx.guild.id))
