@@ -160,10 +160,14 @@ class GuildLog(commands.Cog):
         await ctx.send(embed=embed)
 
     @gset.command(name="channel")
-    async def set_log_channel(self, ctx, *, channel: discord.TextChannel):
+    async def set_log_channel(self, ctx, *, channel: discord.TextChannel = None):
         """Set a channel for the bot to log guilds it leaves/joins"""
-        await self.config.guild(ctx.guild).channel.set(str(channel.id))
-        await ctx.tick()
+        if channel:
+            await self.config.guild(ctx.guild).channel.set(str(channel.id))
+            await ctx.send(f"Log channel set to {channel.mention}")
+        else:
+            await self.config.guild(ctx.guild).channel.set(None)
+            await ctx.send("Log channel **Disabled**")
 
     @gset.command(name="embeds")
     async def toggle_embeds(self, ctx):
