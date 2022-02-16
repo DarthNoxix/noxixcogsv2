@@ -119,7 +119,7 @@ class GuildLog(commands.Cog):
 
     @commands.group(name="guildlogset", aliases=["glset"])
     @commands.guild_only()
-    @commands.is_owner()
+    @commands.admin()
     async def gset(self, ctx):
         """Configure GuildLog Settings"""
         pass
