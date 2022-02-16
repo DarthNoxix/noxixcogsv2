@@ -205,7 +205,7 @@ class GuildLog(commands.Cog):
         Color value must be an integer
         """
         try:
-            embed = discord.Embed(description="Your join messages will look like this", color=color)
+            embed = discord.Embed(description="Your join messages will now use this color", color=color)
             await ctx.send(embed=embed)
         except Exception as e:
             return await ctx.send(f"Failed to set embed color:\n{box(str(e))}")
@@ -241,7 +241,7 @@ class GuildLog(commands.Cog):
         Color value must be an integer
         """
         try:
-            embed = discord.Embed(description="Your leave messages will look like this", color=color)
+            embed = discord.Embed(description="Your leave messages will now use this color", color=color)
             await ctx.send(embed=embed)
         except Exception as e:
             return await ctx.send(f"Failed to set embed color:\n{box(str(e))}")
