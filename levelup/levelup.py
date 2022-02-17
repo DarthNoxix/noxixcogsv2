@@ -47,7 +47,7 @@ LOADING = "https://i.imgur.com/l3p6EMX.gif"
 class LevelUp(commands.Cog):
     """Local Discord Leveling System"""
     __author__ = "Vertyco#0117"
-    __version__ = "1.0.2"
+    __version__ = "1.0.3"
 
     def format_help_for_context(self, ctx):
         helpcmd = super().format_help_for_context(ctx)
@@ -856,8 +856,6 @@ class LevelUp(commands.Cog):
                     users = conf["users"]
                     for user in guild.members:
                         user_id = str(user.id)
-                        if user_id not in users:
-                            continue
                         try:
                             userinfo = await self.db.users.find_one({"user_id": user_id})
                         except Exception as e:
@@ -865,20 +863,32 @@ class LevelUp(commands.Cog):
                             continue
                         if not userinfo:
                             continue
-                        rep = userinfo["rep"]
+                        if user_id not in users:
+                            users[user_id] = {
+                                "xp": 0,
+                                "voice": 0,  # Seconds
+                                "messages": 0,
+                                "level": 0,
+                                "prestige": 0,
+                                "emoji": None,
+                                "background": None,
+                                "stars": 0
+                            }
                         servers = userinfo["servers"]
+                        # Import levels
                         if guild_id in servers:
                             level = servers[guild_id]["level"]
                         else:
                             level = None
-                        if "stars" in users[user_id]:
-                            users[user_id]["stars"] = int(rep)
                         if level:
                             base = conf["base"]
                             exp = conf["exp"]
                             xp = get_xp(level, base, exp)
                             users[user_id]["level"] = int(level)
                             users[user_id]["xp"] = xp
+                        # Import rep
+                        if "stars" in users[user_id]:
+                            users[user_id]["stars"] = int(userinfo["rep"])
                         if level or "stars" in users[user_id]:
                             users_imported += 1
             embed = discord.Embed(
@@ -1739,13 +1749,12 @@ class LevelUp(commands.Cog):
                 xp = sorted_users[i][1]
                 level = get_level(int(xp), base, exp)
                 level = f"{level}"
-                xp = "{:,}".format(int(xp))
                 table.append([label, f"Lvl {level}", f"{xp} xp", user])
 
             msg = tabulate.tabulate(table, tablefmt="presto")
             embed = discord.Embed(
                 title="LevelUp Leaderboard",
-                description=f"{title}{box(msg)}",
+                description=f"{title}{box(msg, lang='python')}",
                 color=discord.Color.random()
             )
             embed.set_thumbnail(url=ctx.guild.icon_url)
