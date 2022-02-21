@@ -77,7 +77,7 @@ class MCTools(commands.Cog):
     @commands.guild_only()
     @commands.admin()
     async def addserver(self, ctx, address: str, port: int):
-        """Add an MC Bedrock server. format is IP:PORT"""
+        """Add an MC Bedrock server."""
         async with ctx.typing():
             data = await self.getserver(address, port)
         if data == "timeout":
