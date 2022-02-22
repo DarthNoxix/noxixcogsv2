@@ -2,7 +2,7 @@
   "author": [
     "Vertyco"
   ],
-  "description": "Discord support ticket system with buttons!",
+  "description": "PNW Application system with buttons!",
   "disabled": false,
   "end_user_data_statement": "This cog does not persistently store data about users.",
   "hidden": false,
@@ -22,13 +22,13 @@
   "requirements": [
     "dislash.py"
   ],
-  "short": "Support ticket system",
+  "short": "Application system",
   "tags": [
     "utility",
     "tickets",
     "ticket",
-    "support",
-    "support system"
+    "application",
+    "application system"
   ],
   "type": "COG"
 }
